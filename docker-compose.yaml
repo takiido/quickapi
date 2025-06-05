@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: ./backend
+    container_name: quickapi-backend
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env.backend
+    ports:
+      - 8000:8000
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - postgres
+    networks:
+      - quickapi-network
+
+  postgres:
+    container_name: quickapi-postgres
+    image: postgres:15
+    ports:
+      - 5432:5432
+    env_file:
+      - .env.postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - quickapi-network
+
+networks:
+  quickapi-network:
+    driver: bridge
+
+volumes:
+  pgdata:

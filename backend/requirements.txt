@@ -1,0 +1,5 @@
+fastapi[standard]
+asyncpg
+sqlalchemy
+passlib[bcrypt]
+python-dotenv
