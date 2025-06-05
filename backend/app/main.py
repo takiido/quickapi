@@ -1,9 +1,17 @@
 from fastapi import FastAPI
-from app.db import init_db, get_session
+from contextlib import asynccontextmanager
+from app.db import init_db
+from app.routes import user
 
 app = FastAPI()
 
-@app.on_event("startup")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager to handle startup and shutdown events."""
+    on_startup()
+    yield
+
+
 def on_startup():
     try:
         init_db()
@@ -16,6 +24,4 @@ def on_startup():
 def read_root():
     return {"message": "Hello QuickAPI"}
 
-@app.get("/panel")
-def read_panel():
-    return {"message": "Welcome to the QuickAPI Panel"}
+app.include_router(user.router)

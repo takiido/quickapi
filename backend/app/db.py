@@ -1,5 +1,4 @@
 from sqlmodel import create_engine, Session, SQLModel
-from app.models import User
 import os
 
 db_user = os.getenv("POSTGRES_USER", "postgres")
