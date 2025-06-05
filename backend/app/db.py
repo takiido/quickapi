@@ -8,8 +8,10 @@ DATABASE_URL = f"postgresql://{db_user}:{db_password}@quickapi-postgres:5432/qui
 
 engine = create_engine(DATABASE_URL, echo=True)
 
+
 def init_db():
     SQLModel.metadata.create_all(engine)
+
 
 def get_session():
     with Session(engine) as session:

@@ -13,7 +13,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - quickapi-network
+      - qapi-network
 
   postgres:
     container_name: quickapi-postgres
@@ -25,10 +25,10 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - quickapi-network
+      - qapi-network
 
 networks:
-  quickapi-network:
+  qapi-network:
     driver: bridge
 
 volumes:
