@@ -15,3 +15,7 @@ def on_startup():
 @app.get("/")
 def read_root():
     return {"message": "Hello QuickAPI"}
+
+@app.get("/panel")
+def read_panel():
+    return {"message": "Welcome to the QuickAPI Panel"}
