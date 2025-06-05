@@ -3,3 +3,5 @@ asyncpg
 sqlalchemy
 passlib[bcrypt]
 python-dotenv
+sqlmodel
+psycopg2-binary
