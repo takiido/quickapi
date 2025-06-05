@@ -15,6 +15,11 @@ def create_user(session, user_data: UserCreate) -> User:
     return user
 
 
+def get_all_users(sesssion):
+    users = sesssion.query(User).all()
+    return users
+
+
 def get_user(session, user_id: int):
     user = session.get(User, user_id)
     if not user:
