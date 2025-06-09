@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserPublic, UserCreate, UserRead, UserUpdate
 from app.crud.user import (
+    check_username_exists,
     create_user,
     get_all_users,
     get_user,
-    get_user_by_username,
-    get_user_by_email,
+    get_user_by_username_or_email,
+    update_user,
 )
 from app.db import get_session
+
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -79,60 +81,74 @@ async def get_by_id(user_id: int, session=Depends(get_session)):
 
 
 @router.get(
-    "/username/{username}",
+    "/u/{identifier}",
     response_model=UserRead,
     responses={
         200: {"description": "User found"},
-        400: {"description": "Invalid username"},
+        400: {"description": "Invalid username or email"},
         404: {"description": "User not found"},
         500: {"description": "Internal Server Error"},
     },
 )
-async def get_by_username(username: str, session=Depends(get_session)):
+async def get_by_username_or_email(identifier: str, session=Depends(get_session)):
     try:
-        if not username or len(username) < 3:
-            raise HTTPException(status_code=400, detail="Invalid username")
-        if not username.isalnum():
-            raise HTTPException(status_code=400, detail="Username must be alphanumeric")
-        if len(username) > 50:
-            raise HTTPException(status_code=400, detail="Username too long")
-        if not username[0].isalpha():
-            raise HTTPException(status_code=400, detail="Username must start with a letter")
+        if not identifier or len(identifier) < 3:
+            raise HTTPException(status_code=400, detail="Invalid username or email")
+        if "@" in identifier:
+            if "@" not in identifier or "." not in identifier.split("@")[-1]:
+                raise HTTPException(status_code=400, detail="Invalid email format")
+            if len(identifier) > 254:
+                raise HTTPException(status_code=400, detail="Email too long")
+            if not identifier.split("@")[0].isalnum():
+                raise HTTPException(status_code=400, detail="Email local part must be alphanumeric")
+        else:
+            if not identifier.isalnum():
+                raise HTTPException(status_code=400, detail="Username must be alphanumeric")
+            if len(identifier) > 50:
+                raise HTTPException(status_code=400, detail="Username too long")
+            if not identifier[0].isalpha():
+                raise HTTPException(status_code=400, detail="Username must start with a letter")
         
-        user = get_user_by_username(session, username)
+        user = get_user_by_username_or_email(session, identifier)
         if not user:
             raise HTTPException(
-                status_code=404, detail=f"User with username {username} not found"
-                )
+                status_code=404, detail=f"User with identifier {identifier} not found"
+            )
         return UserRead(**user.dict())
-    
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
-@router.get(
-    "/email/{email}",
-    response_model=UserRead,
+@router.patch(
+    "/{user_id}",
+    response_model=UserPublic,
+    summary="Update user username or full name",
     responses={
-        200: {"description": "User found"},
-        400: {"description": "Invalid email"},
+        200: {"description": "User updated successfully"},
+        400: {"description": "Invalid input or username already exists"},
         404: {"description": "User not found"},
         500: {"description": "Internal Server Error"},
     },
-)
-async def get_by_email(email: str, session=Depends(get_session)):
+    )
+async def update(user_id: int, user: UserUpdate, session=Depends(get_session)):
     try:
-        if not email or "@" not in email or "." not in email.split("@")[-1]:
-            raise HTTPException(status_code=400, detail="Invalid email format")
-        if len(email) > 254:
-            raise HTTPException(status_code=400, detail="Email too long")
-        if not email.split("@")[0].isalnum():
-            raise HTTPException(status_code=400, detail="Email local part must be alphanumeric")
+        if user_id <= 0:
+            raise HTTPException(status_code=400, detail="Invalid user ID")
+        if not isinstance(user_id, int):
+            raise HTTPException(status_code=400, detail="User ID must be an integer")
         
-        user = get_user_by_email(session, email)
+        if user.username and check_username_exists(session, user.username):
+            raise HTTPException(status_code=400, detail="Username already exists")
+        
+        user = update_user(session, user_id, user)
         if not user:
-            raise HTTPException(status_code=404, detail=f"User with email {email} not found")
-        return UserRead(**user.dict())
-    
-    except Exception as e:
+            raise HTTPException(
+                status_code=404, detail=f"User with ID {user_id} not found"
+                )
+        return UserPublic(id=user_id)
+    except HTTPException as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
+        
+            
+            
+
+        

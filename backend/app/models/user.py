@@ -8,3 +8,4 @@ class User(SQLModel, table=True):
     password: str = Field(nullable=False)
     full_name: str | None = Field(index=True, nullable=True)
     disabled: bool = Field(default=False, index=True, nullable=False)
+    
