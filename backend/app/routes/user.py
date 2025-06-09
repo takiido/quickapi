@@ -1,8 +1,10 @@
+from hmac import new
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.user import UserPublic, UserCreate, UserRead, UserUpdate
+from app.schemas.user import UserDelete, UserPublic, UserCreate, UserRead, UserUpdate
 from app.crud.user import (
     check_username_exists,
     create_user,
+    delete_user,
     get_all_users,
     get_user,
     get_user_by_username_or_email,
@@ -154,3 +156,28 @@ async def update(user_id: int, user: UserUpdate, session=Depends(get_session)):
         return UserPublic(id=user_id)
     except HTTPException as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.delete(
+    "/{user_id}",
+    response_description="Delete user",
+    responses={
+        201: {"description": "User deleted successfully"},
+        400: {"description": "Duplicate username or email"},
+        404: {"description": "User not found"},
+        500: {"description": "Internal Server Error"},
+    },
+)
+async def delete(user_id: int, user: UserDelete, session=Depends(get_session)):
+    try:
+        if user_id <= 0:
+            raise HTTPException(status_code=400, detail="Invalid user ID")
+        if not isinstance(user_id, int):
+            raise HTTPException(status_code=400, detail="User ID must be an integer")
+
+        user = delete_user(session, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+    except HTTPException as e:
+        raise HTTPException(status_code=500, detail="Internal server error")

@@ -29,3 +29,9 @@ class UserUpdate(BaseModel):
     full_name: str | None = None
 
     model_config = {"from_attributes": True}
+
+
+class UserDelete(BaseModel):
+    disabled: bool | None = True
+    
+    model_config = {"from_attributes": True}
