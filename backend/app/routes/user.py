@@ -68,14 +68,14 @@ async def get_by_id(user_id: int, session=Depends(get_session)):
             raise HTTPException(status_code=400, detail="Invalid user ID")
         if not isinstance(user_id, int):
             raise HTTPException(status_code=400, detail="User ID must be an integer")
-        
+
         user = get_user(session, user_id)
         if not user:
             raise HTTPException(
                 status_code=404, detail=f"User with ID {user_id} not found"
             )
         return UserRead(**user.dict())
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail="Database session error")
 
@@ -100,15 +100,21 @@ async def get_by_username_or_email(identifier: str, session=Depends(get_session)
             if len(identifier) > 254:
                 raise HTTPException(status_code=400, detail="Email too long")
             if not identifier.split("@")[0].isalnum():
-                raise HTTPException(status_code=400, detail="Email local part must be alphanumeric")
+                raise HTTPException(
+                    status_code=400, detail="Email local part must be alphanumeric"
+                )
         else:
             if not identifier.isalnum():
-                raise HTTPException(status_code=400, detail="Username must be alphanumeric")
+                raise HTTPException(
+                    status_code=400, detail="Username must be alphanumeric"
+                )
             if len(identifier) > 50:
                 raise HTTPException(status_code=400, detail="Username too long")
             if not identifier[0].isalpha():
-                raise HTTPException(status_code=400, detail="Username must start with a letter")
-        
+                raise HTTPException(
+                    status_code=400, detail="Username must start with a letter"
+                )
+
         user = get_user_by_username_or_email(session, identifier)
         if not user:
             raise HTTPException(
@@ -117,6 +123,7 @@ async def get_by_username_or_email(identifier: str, session=Depends(get_session)
         return UserRead(**user.dict())
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 @router.patch(
     "/{user_id}",
@@ -128,27 +135,22 @@ async def get_by_username_or_email(identifier: str, session=Depends(get_session)
         404: {"description": "User not found"},
         500: {"description": "Internal Server Error"},
     },
-    )
+)
 async def update(user_id: int, user: UserUpdate, session=Depends(get_session)):
     try:
         if user_id <= 0:
             raise HTTPException(status_code=400, detail="Invalid user ID")
         if not isinstance(user_id, int):
             raise HTTPException(status_code=400, detail="User ID must be an integer")
-        
+
         if user.username and check_username_exists(session, user.username):
             raise HTTPException(status_code=400, detail="Username already exists")
-        
+
         user = update_user(session, user_id, user)
         if not user:
             raise HTTPException(
                 status_code=404, detail=f"User with ID {user_id} not found"
-                )
+            )
         return UserPublic(id=user_id)
     except HTTPException as e:
         raise HTTPException(status_code=500, detail="Internal Server Error")
-        
-            
-            
-
-        

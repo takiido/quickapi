@@ -28,9 +28,11 @@ def get_user(session, user_id: int):
 
 
 def get_user_by_username_or_email(session, username: str):
-    user = session.query(User).filter(
-        (User.username == username) | (User.email == username)
-    ).first()
+    user = (
+        session.query(User)
+        .filter((User.username == username) | (User.email == username))
+        .first()
+    )
     if not user:
         return None
     return user
@@ -45,9 +47,9 @@ def get_user_by_email(session, email: str):
 
 def update_user(session, user_id: int, user: UserUpdate):
     db_user = session.get(User, user_id)
-    
+
     user_data = user.model_dump(exclude_unset=True)
-    
+
     db_user.sqlmodel_update(user_data)
     session.add(db_user)
     session.commit()
