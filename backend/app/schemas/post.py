@@ -7,7 +7,7 @@ class PostCreate(BaseModel):
     user_id: int
     content: str
     createdAt: str = str(calendar.timegm(time.gmtime()))
-    disabled = False
+    disabled: bool = False
 
 
 class PostRead(BaseModel):

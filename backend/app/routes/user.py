@@ -1,4 +1,3 @@
-from hmac import new
 from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.user import UserDelete, UserPublic, UserCreate, UserRead, UserUpdate
 from app.crud.user import (
@@ -13,7 +12,7 @@ from app.crud.user import (
 from app.db import get_session
 
 
-router = APIRouter(prefix="/user", tags=["user"])
+router = APIRouter(prefix="/u", tags=["user"])
 
 
 @router.post(
@@ -83,7 +82,7 @@ async def get_by_id(user_id: int, session=Depends(get_session)):
 
 
 @router.get(
-    "/u/{identifier}",
+    "/d/{identifier}",
     response_model=UserRead,
     responses={
         200: {"description": "User found"},

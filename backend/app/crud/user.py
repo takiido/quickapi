@@ -1,6 +1,5 @@
-from re import L
 from app.models.user import User
-from app.schemas.user import UserCreate, UserDelete, UserRead, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate
 
 
 def create_user(session, user_data: UserCreate) -> User:

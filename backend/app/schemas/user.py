@@ -20,8 +20,7 @@ class UserRead(BaseModel):
     full_name: str | None = None
     disabled: bool = False
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class UserUpdate(BaseModel):
@@ -33,5 +32,6 @@ class UserUpdate(BaseModel):
 
 class UserDelete(BaseModel):
     disabled: bool | None = True
-    
+
     model_config = {"from_attributes": True}
+
