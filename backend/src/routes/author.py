@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.author import AuthorDelete, AuthorPublic, AuthorCreate, AuthorRead, AuthorUpdate
-from app.crud.author import (
+from src.schemas.author import AuthorDelete, AuthorPublic, AuthorCreate, AuthorRead, AuthorUpdate
+from src.crud.author import (
     check_username_exists,
     create_author,
     delete_author,
@@ -9,8 +9,8 @@ from app.crud.author import (
     get_author_by_identifier,
     update_author,
 )
-from app.db import get_session
-from app.utils.validations import validate_id
+from src.db import get_session
+from src.utils.validations import validate_id
 
 router = APIRouter(prefix="/a", tags=["author"])
 

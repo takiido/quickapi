@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.crud.post import (
+from src.crud.post import (
     create_post,
     get_all_posts,
     get_post,
@@ -8,8 +8,8 @@ from app.crud.post import (
     get_posts_by_username,
     delete_post
 )
-from app.db import get_session
-from app.schemas.post import PostCreate, PostRead
+from src.db import get_session
+from src.schemas.post import PostCreate, PostRead
 
 router = APIRouter(prefix="/p", tags=["post"])
 

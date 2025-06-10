@@ -1,7 +1,7 @@
 from sqlmodel import select
-from app.models.post import Post
-from app.models.author import Author
-from app.schemas.post import PostCreate
+from src.models.post import Post
+from src.models.author import Author
+from src.schemas.post import PostCreate
 
 
 def create_post(session, post_data: PostCreate) -> Post:

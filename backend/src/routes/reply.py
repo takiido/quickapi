@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.crud.reply import (
+from src.crud.reply import (
     create_reply,
     get_replies_by_post_id, delete_reply
 )
-from app.db import get_session
-from app.schemas.reply import ReplyCreate, ReplyRead
-from app.utils.validations import validate_id
+from src.db import get_session
+from src.schemas.reply import ReplyCreate, ReplyRead
+from src.utils.validations import validate_id
 
 router = APIRouter(prefix="/r", tags=["reply"])
 

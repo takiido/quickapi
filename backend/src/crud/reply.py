@@ -1,8 +1,8 @@
 from sqlmodel import select
-from app.models.reply import Reply
-from app.schemas.reply import ReplyCreate
-from app.models.author import Author
-from app.models.post import Post
+from src.models.reply import Reply
+from src.schemas.reply import ReplyCreate
+from src.models.author import Author
+from src.models.post import Post
 
 
 def create_reply(session, reply_data: ReplyCreate):
