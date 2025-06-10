@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db import init_db
-from app.routes import user
+from app.routes import author
 from app.routes import post
 
 
@@ -29,5 +29,5 @@ def read_root():
     return {"message": "Hello QuickAPI"}
 
 
-app.include_router(user.router)
+app.include_router(author.router)
 app.include_router(post.router)

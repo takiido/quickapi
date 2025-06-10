@@ -1,6 +1,6 @@
 from sqlmodel import select
 from app.models.post import Post
-from app.models.user import User
+from app.models.author import Author
 from app.schemas.post import PostCreate
 
 
@@ -15,10 +15,10 @@ def create_post(session, post_data: PostCreate) -> Post:
 def get_all_posts(session):
     statement = (
         select(Post)
-        .join(User)
+        .join(Author)
         .where(
             Post.disabled == False,
-            User.disabled == False
+            Author.disabled == False
         )
     )
     posts = session.exec(statement).all()
@@ -27,26 +27,24 @@ def get_all_posts(session):
 def get_post(session, post_id: int):
     statement = (
         select(Post)
-        .join(User, Post.user_id == User.id)
+        .join(Author, Post.author_id == Author.id)
         .where(
             Post.id == post_id,
             Post.disabled == False,
-            User.disabled == False
+            Author.disabled == False
         )
     )
     post = session.exec(statement).first()
-    if post is None:
-        return None
     return post
 
 def get_posts_by_user_id(session, user_id: int):
     statement = (
         select(Post)
-        .join(User)
+        .join(Author)
         .where(
-            User.id == user_id,
+            Author.id == user_id,
             Post.disabled == False,
-            User.disabled == False
+            Author.disabled == False
         )
     )
     posts = session.exec(statement).all()
@@ -55,18 +53,25 @@ def get_posts_by_user_id(session, user_id: int):
 def get_posts_by_username(session, username: str):
     statement = (
         select(Post)
-        .join(User)
+        .join(Author)
         .where(
-            User.username == username,
+            Author.username == username,
             Post.disabled == False,
-            User.disabled == False
+            Author.disabled == False
         )
     )
     posts = session.exec(statement).all()
     return posts
 
 def delete_post(session, post_id: int):
-    db_post = session.query(Post).get(post_id)
+    statement = (
+        select(Post)
+        .where(
+            Post.id == post_id,
+            Post.disabled == False
+        )
+    )
+    db_post = session.exec(statement).first()
     if db_post is None or db_post.disabled:
         return None
 
