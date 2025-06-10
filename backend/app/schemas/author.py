@@ -1,11 +1,11 @@
 from pydantic import BaseModel, EmailStr
 
 
-class UserPublic(BaseModel):
+class AuthorPublic(BaseModel):
     id: int
 
 
-class UserCreate(BaseModel):
+class AuthorCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
@@ -13,25 +13,25 @@ class UserCreate(BaseModel):
     disabled: bool = False
 
 
-class UserRead(BaseModel):
+class AuthorRead(BaseModel):
     id: int
     username: str
     email: EmailStr
     full_name: str | None = None
     disabled: bool = False
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
-class UserUpdate(BaseModel):
+class AuthorUpdate(BaseModel):
     username: str | None = None
     full_name: str | None = None
 
     model_config = {"from_attributes": True}
 
 
-class UserDelete(BaseModel):
+class AuthorDelete(BaseModel):
     disabled: bool | None = True
-    
+
     model_config = {"from_attributes": True}
+
