@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.db import init_db
-from app.routes import author
-from app.routes import post
+from app.routes import author, reply, post
 
 
 @asynccontextmanager
@@ -31,3 +30,4 @@ def read_root():
 
 app.include_router(author.router)
 app.include_router(post.router)
+app.include_router(reply.router)
