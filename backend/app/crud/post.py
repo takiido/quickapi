@@ -13,7 +13,15 @@ def create_post(session, post_data: PostCreate) -> Post:
 
 
 def get_all_posts(session):
-    posts = session.query(Post).filter(Post.disabled == False).all()
+    statement = (
+        select(Post)
+        .join(User)
+        .where(
+            Post.disabled == False,
+            User.disabled == False
+        )
+    )
+    posts = session.exec(statement).all()
     return posts
 
 def get_post(session, post_id: int):
