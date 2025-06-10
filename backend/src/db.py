@@ -1,5 +1,6 @@
-from sqlmodel import create_engine, Session, SQLModel
 import os
+
+from sqlmodel import create_engine, Session, SQLModel
 
 db_user = os.getenv("POSTGRES_USER", "postgres")
 db_password = os.getenv("POSTGRES_PASSWORD", "postgres")
