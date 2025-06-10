@@ -21,8 +21,8 @@ def get_all_users(sesssion):
 
 
 def get_user(session, user_id: int):
-    user = session.get(User, user_id).filter(User.disabled == False)
-    if not user:
+    user = session.get(User, user_id)
+    if not user or user.disabled:
         return None
     return user
 
