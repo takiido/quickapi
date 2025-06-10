@@ -3,13 +3,13 @@ services:
     build: ./backend
     container_name: quickapi-backend
     volumes:
-      - ./backend:/app
+      - ./backend:/src
     env_file:
       - .env.backend
     ports:
       - 8000:8000
     command: >
-      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - postgres
     networks:
@@ -33,3 +33,4 @@ networks:
 
 volumes:
   pgdata:
+

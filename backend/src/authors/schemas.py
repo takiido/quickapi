@@ -19,7 +19,7 @@ class AuthorCreate(SQLModel):
     username: constr(
         min_length=3,
         max_length=15,
-        regex=r"^[a-zA-Z0-9_]+$",
+        pattern=r"^[a-zA-Z0-9_]+$",
         to_lower=True,
         strip_whitespace=True
     )
@@ -67,7 +67,7 @@ class AuthorUpdate(SQLModel):
     username: constr(
         min_length=3,
         max_length=15,
-        regex=r"^[a-zA-Z0-9_]+$",
+        pattern=r"^[a-zA-Z0-9_]+$",
         to_lower=True,
         strip_whitespace=True
     ) | None = None

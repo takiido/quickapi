@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
 from src.db import init_db
-from src.routes import author, reply, post
+from src.authors.router import router as authors_router
 
 
 @asynccontextmanager
@@ -20,7 +21,12 @@ def on_startup():
         raise e
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="QuickAPI",
+    version="0.1.0",
+    description="A simple FastAPI application with SQLModel and SQLite",
+    lifespan=lifespan
+)
 
 
 @app.get("/")
@@ -28,6 +34,4 @@ def read_root():
     return {"message": "Hello QuickAPI"}
 
 
-app.include_router(author.router)
-app.include_router(post.router)
-app.include_router(reply.router)
+app.include_router(authors_router)
