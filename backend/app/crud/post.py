@@ -1,3 +1,4 @@
+from sqlmodel import select
 from app.models.post import Post
 from app.models.user import User
 from app.schemas.post import PostCreate
@@ -16,27 +17,50 @@ def get_all_posts(session):
     return posts
 
 def get_post(session, post_id: int):
-    post = session.get(Post, post_id)
-    if not post or post.disabled:
-        return None
+    statement = (
+        select(Post)
+        .join(User)
+        .where(
+            Post.id == post_id,
+            Post.disabled == False,
+            User.disabled == False
+        )
+    )
+    post = session.exec(statement).first()
     return post
 
 def get_posts_by_user_id(session, user_id: int):
-    posts = (
-        session.query(Post)
-        .filter(Post.user_id == user_id)
-        .filter(Post.disabled == False)
-        .all()
+    statement = (
+        select(Post)
+        .join(User)
+        .where(
+            User.id == user_id,
+            Post.disabled == False,
+            User.disabled == False
+        )
     )
+    posts = session.exec(statement).all()
     return posts
 
 def get_posts_by_username(session, username: str):
-    posts = (
-        session.query(Post)
-        .join(User, Post.user_id == User.id)
-        .filter(User.username == username)
-        .filter(Post.disabled == False)
-        .all()
+    statement = (
+        select(Post)
+        .join(User)
+        .where(
+            User.username == username,
+            Post.disabled == False,
+            User.disabled == False
+        )
     )
+    posts = session.exec(statement).all()
     return posts
 
+def delete_post(session, post_id: int):
+    db_post = session.query(Post).get(post_id)
+    if db_post is None or db_post.disabled:
+        return None
+
+    db_post.disabled = True
+    session.commit()
+    session.refresh(db_post)
+    return db_post

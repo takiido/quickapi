@@ -5,7 +5,8 @@ from app.crud.post import (
     get_all_posts,
     get_post,
     get_posts_by_user_id,
-    get_posts_by_username
+    get_posts_by_username,
+    delete_post
 )
 from app.db import get_session
 from app.schemas.post import PostCreate, PostRead
@@ -119,5 +120,32 @@ async def get_by_username(username: str, session=Depends(get_session)):
         if not posts:
             raise HTTPException(status_code=404, detail="No posts found for this user")
         return posts
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.delete(
+"/{post_id}",
+    summary="Delete post by ID",
+    response_description="Delete a post",
+    responses={
+        200: {"description": "Post deleted successfully"},
+        400: {"description": "Invalid post ID"},
+        404: {"description": "Post not found"},
+        500: {"description": "Internal server error"},
+    },
+)
+async def delete(post_id: int, session=Depends(get_session)):
+    try:
+        if post_id <= 0:
+            raise HTTPException(status_code=400, detail="Invalid post ID")
+        if not isinstance(post_id, int):
+            raise HTTPException(status_code=400, detail="Post ID must be an integer")
+
+        post = delete_post(session, post_id)
+        if not post:
+            raise HTTPException(status_code=404, detail="Post not found")
+
+        return {"message": "Post deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")

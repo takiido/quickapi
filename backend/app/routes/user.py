@@ -178,5 +178,6 @@ async def delete(user_id: int, user: UserDelete, session=Depends(get_session)):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
+        return {"message": "User deleted successfully"}
     except HTTPException as e:
         raise HTTPException(status_code=500, detail="Internal server error")
