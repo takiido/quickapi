@@ -27,7 +27,7 @@ def get_all_posts(session):
 def get_post(session, post_id: int):
     statement = (
         select(Post)
-        .join(User)
+        .join(User, Post.user_id == User.id)
         .where(
             Post.id == post_id,
             Post.disabled == False,
@@ -35,6 +35,8 @@ def get_post(session, post_id: int):
         )
     )
     post = session.exec(statement).first()
+    if post is None:
+        return None
     return post
 
 def get_posts_by_user_id(session, user_id: int):
