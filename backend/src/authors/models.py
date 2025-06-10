@@ -22,6 +22,7 @@ class Author(SQLModel, table=True):
     )
     username: str = Field(
         index=True,
+        unique=True,
         nullable=False,
         description="Username of the author, must be unique and alphanumeric"
     )
