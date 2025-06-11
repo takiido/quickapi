@@ -11,7 +11,7 @@ class AuthorCreate(SQLModel):
     Attributes:
         username (str): Unique username for the author, must be alphanumeric, 3-15 symbols.
         email (EmailStr): Email address of the author, must be valid.
-        password (str): Password for the author, should be hashed before storing.
+        password_hash (str): Password for the author, should be hashed before storing.
         full_name (str | None): Full name of the author, optional, 1-100 symbols.
         disabled (bool): Indicates if the author is disabled (e.g., banned or inactive).
         registered_at (str): Timestamp of when the author registered, in ISO format.
@@ -25,7 +25,7 @@ class AuthorCreate(SQLModel):
     )
     email: EmailStr
     # ToDo: Consider hashing the password before storing it
-    password: str
+    password_hash: str
     full_name: constr(
         min_length=1,
         max_length=100,
@@ -52,6 +52,12 @@ class AuthorRead(SQLModel):
     full_name: str | None = None
     disabled: bool
     registered_at: str
+
+
+class AuthorPublic(SQLModel):
+    id: int
+    username: str
+    full_name: str | None = None
 
 
 class AuthorUpdate(SQLModel):

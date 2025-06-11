@@ -9,3 +9,8 @@ UsernameAlreadyTakenException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
     detail="Username already taken"
 )
+
+AuthorNotFoundException = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Author not found"
+)
