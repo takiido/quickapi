@@ -78,7 +78,10 @@ def get_author(session, author_id: int) -> models.Author:
     :return: AuthorRead schema instance
     :raises ValueError: If the author does not exist
     """
-    statement = select(models.Author).where(models.Author.id == author_id)
+    statement = (
+        select(models.Author)
+        .where(models.Author.id == author_id)
+    )
     author = session.exec(statement).first()
 
     if author is None:

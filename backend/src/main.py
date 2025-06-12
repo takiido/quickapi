@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from src.db import init_db
 from src.authors.router import router as authors_router
+from src.posts.router import router as posts_router
 
 
 @asynccontextmanager
@@ -35,3 +36,4 @@ def read_root():
 
 
 app.include_router(authors_router)
+app.include_router(posts_router)

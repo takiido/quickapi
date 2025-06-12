@@ -18,7 +18,7 @@ class Author(SQLModel, table=True):
     id: int | None = Field(
         default=None,
         primary_key=True,
-        description="Author ID"
+        description="Author ID, auto-incremented"
     )
     username: str = Field(
         index=True,
@@ -28,7 +28,8 @@ class Author(SQLModel, table=True):
     )
     email: str = Field(
         index=True,
-        nullable=False, description="Email address of the author"
+        nullable=False,
+        description="Email address of the author"
     )
     # ToDO: Consider hashing the password before storing it
     password_hash: str = Field(
